@@ -26,6 +26,7 @@ class ProfetPMM {
     void read_ch();
     void set_ch(bool state);
     void cycle_ch(int duration);
+    void toggle_ch();
 
     // Advanced diagnostics functions
     void diag_open_load(); // Open load detection

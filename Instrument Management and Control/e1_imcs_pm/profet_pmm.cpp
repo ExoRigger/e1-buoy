@@ -45,7 +45,7 @@ void ProfetPMM::init() {
   pinMode(this->switch_pin, OUTPUT);
   pinMode(this->den_pin,OUTPUT);
   digitalWrite(den_pin,LOW);
-  set_ch(false);
+  set_ch(true);
   read_ch();
 }
 
@@ -61,7 +61,7 @@ String ProfetPMM::status(bool verbose) {
   // Generate Status String for power channel instance
   String status_string = "";
   digitalWrite(this->den_pin,HIGH);
-  delay(1);
+  delay(20);
   if (verbose) {
       status_string += "    PMM: ";
       status_string += String(this->module_no);
@@ -72,7 +72,7 @@ String ProfetPMM::status(bool verbose) {
       status_string += String(this->state);
       status_string += " | ";
       status_string += "Vs: ";
-      status_string += String(analogRead(this->v_bat)*(5.0/4095.0));
+      status_string += String(analogRead(this->v_bat)*((5.0/4095.0)* 5.7));
       status_string += "V | ";
       status_string += "Current: ";
       status_string += String(analogRead(this->sense_pin)*(5.0/4095.0)); // Calculate current through another function or in a variable above
@@ -132,4 +132,10 @@ void ProfetPMM::cycle_ch(int duration) {
   delay(duration*1000); // Duration in sec
   set_ch(true); //digitalWrite(this->pin,HIGH); 
 
+}
+
+void ProfetPMM::toggle_ch() {
+  bool state = digitalRead(this->switch_pin);
+  digitalWrite(this->switch_pin,!state);
+  digitalWrite(this->led_pin, !state);
 }

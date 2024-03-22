@@ -36,7 +36,7 @@ String CorePMA::core_status(bool verbose) {
   status_string += "+--------------------------------------------------------------+\n";
 
   status_string += "                        V_bat: ";
-  float v = float(analogRead(1)*(5.0/4095.0));
+  float v = float(5.7 * (analogRead(1)*(5.0/4095.0)));
   status_string += String(v);
   status_string += "V\n";
 
@@ -79,5 +79,13 @@ void CorePMA::cycle_power_ch(int channel) {
       continue;
     }
 
+}
+}
+
+void CorePMA::toggle_power_ch(int channel) {
+  for (int i=0;i<N_OF_CHANNELS;i++) {
+    if (channel == this->imcs_channels[i].channel_no) {
+      this->imcs_channels[i].toggle_ch();
+    }
 }
 }

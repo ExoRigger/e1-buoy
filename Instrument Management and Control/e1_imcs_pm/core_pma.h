@@ -40,6 +40,7 @@ class CorePMA {
     String core_status(bool verbose);
     void set_power_ch(int channel,bool state);
     void cycle_power_ch(int channel);
+    void toggle_power_ch(int channel);
 
 
 };
