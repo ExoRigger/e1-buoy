@@ -6,31 +6,28 @@ import datetime
 from time import sleep
 import sys
 
-LOG_DIR = "C:\core_supervisor\logs"
-DATA_DIR = "C:\core_supervisor\data"
 
-master_log_dir = LOG_DIR + "\master"
+# Change to D:\
+LOG_DIR = "C:\\core_supervisor\\logs"
+DATA_DIR = "C:\\core_supervisor\\data"
+CONF_DIR = ""
+
+supervisor_log_dir = LOG_DIR + "\\supervisor_logs"
 
 # Any master/sysadmin functions beyond core control in here
 
-
 def main():
-    master_log =  Logger("master_log",master_log_dir,"master_log")
+    master_log =  Logger("supervisor_log",supervisor_log_dir,"supervisor_log")
     master_log.log.info(f"[o] Core Supervisor Engaged - Initiating Core System")
-    l4_core = Core(LOG_DIR)
+    e1_core = Core(LOG_DIR)
 
     try:
-
-        ret = l4_core.run()
+        ret = e1_core.run()
         if ret == 1:
-            sys.exit()
-            
+            sys.exit() 
     except Exception as E:
-
         master_log.log.info(f"[-] Core System Failure: {E}")
 
 
 if __name__ == '__main__':
-
-
     main()

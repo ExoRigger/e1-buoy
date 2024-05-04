@@ -1,19 +1,11 @@
-+-----------------------------+
-| ADAM-4017 ADC CHANNELS
-+-----------------------------+
-	CH0		PAR 
-
-+-----------------------------+
-| IMC Power Control:    COM29 |
-+-----------------------------+
 
 +---------------------------------------+
-|   STARTECH USB SERIAL CHANNELS	|
+|   E1 HARDWARE CONFIGURATION		|
 +---------------------------------------+
-
-
-	CH1		USBS 1- COM7 - CTD
-	CH3		USBS 3- COM9 - pH
-	CH5		USBS 5- COM11 - PAR
-	CH7		USBS 7- COM12 - SPN1
-
+        
+        PAYLOAD_PC - 	172.26.14.5 
+        MESH_MMCU  -	172.26.14.1	
+        IMC_EXT    -	172.26.14.3	           , send 'h\r' for command help
+        IMC_PYL    -	COMXX, RS232,115200,8,N,1  , send 'h\r' for command help
+	PAR 	   - 	COMXX, RS232,115200,8,N,1  , send 'm\r' followed by '0\r'
+	CTD	   -	COMXX, RS232,9600,8,N,1

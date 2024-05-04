@@ -9,71 +9,82 @@ from pathlib import Path
 # Interfaces with IMCS embedded unit, which abstracts temperature, voltage, current, power, switch state, analog data 
 
 class IMCSPowerInterface:
-
-    def __init__(self,serial_port,baudrate):
+    # The constructor initializes MCU communication parameters and
+    # creates a logging object to store system activity
+    #   Constructor inputs: 
+    #    serial_port: Serial port of MCU
+    #    baudrate:    Telemetry baudrate of MCU
+    def __init__(self,serial_port,baudrate,log_dir):
         self.device = serial_port
         self.baudrate = baudrate
-        self.log_dir = ".\logs"
-        self.data_dir = ".\data"
-        self.sys_logger = Logger("IMCS System Core Logger",f"{self.log_dir}\\sys","imcs_system_core")
+        self.log_dir = log_dir + "\imc"
+        self.data_dir = log_dir + "\data"
+        self.sys_logger = Logger("IMCS System Core Logger",f"{self.log_dir}","imcs_system_core")
 
-    def send_cmd(self,cmd):
-        byts = cmd.encode()
-        self.sys_logger.log.info(f"[o] Executing Command: {byts}")
+    # Initiate a telemetry session with the MCU to send a command
+    #   Function inputs:
+    #     cmd: 
+    def send_data(self,data):
+        self.sys_logger.log.info(f"[o] Sending Data: {data}")
         with serial.Serial(port=self.device,baudrate=self.baudrate,timeout=1) as imcs:
-
-            sleep(0.1)
-            imcs.write(byts)
-            
+            imcs.write(data.encode())
+           
             while imcs.inWaiting():
-                l = imcs.readline().decode()
+                ack = imcs.readline().decode()
+                self.sys_logger.log.info(f"[o] Receiving Data: {ack}")
                 
             imcs.flushInput()
+            imcs.flushOutput()
             
+    # ================================================================    
+    # Abstracted IMC Commands to reduce direct access to MCU interface
+    # ================================================================
     
     def cycle_ch(self,ch):
-        pass
-        
+        cmd1 = f"c\r"
+        cmd2 = f"{ch}\r"
+        self.send_data(cmd1)
+        self.send_data(cmd2)
         
     def toggle_ch(self,ch):
-        pass
+        cmd1 = f"t\r"
+        cmd2 = f"{ch}\r"
+        self.send_data(cmd1)
+        self.send_data(cmd2)
     
     def set_mode(self,mode):
-        with serial.Serial(port=self.device,baudrate=self.baudrate,timeout=1) as imcs:
-
-            sleep(0.1)
-            cmd = f"m\r{mode}\r"
-            imcs.write(cmd.encode())
-            
-            while imcs.inWaiting():
-                l = imcs.readline().decode()
-            imcs.flushInput()
-           
+        cmd1 = f"m\r"
+        cmd2 = f"{mode}\r"
+        self.send_data(cmd1)
+        self.send_data(cmd2)
+          
     def log_status(self,status_string):
         ch_array = status_string.split(';')
         self.sys_logger.log.info("CHANNEL,STATE,VOLTAGE,CURRENT")
         for ch in ch_array:
             self.sys_logger.log.info(ch)
-        
-        
-    def sample_imc(self,samples=200):
-        
-        self.set_mode("1")
+
+    # ================================================================
+  
+  
+    # ================================================================
+    #
+    # ================================================================
+    def sample_imc(self,samples=200,frequency=1):
         self.set_mode("1")
         for i in range(samples):
             try:
+                #sleep(frequency)
                 with serial.Serial(port=self.device,baudrate=self.baudrate,timeout=1) as imcs:
-                            l = imcs.readline().decode()
-                            self.log_status(l)
-                            sleep(0.2)
-                            
+                            status_string = imcs.readline().decode()
+                self.log_status(status_string)                         
             except Exception as Err:
-                print("err")
-        self.set_mode("0")
+                self.sys_logger.log.info(f"[-] Error Sampling IMC: \n{Err}")
+            
         self.set_mode("0")
         
 if __name__ == '__main__':
-    g = IMCSPowerInterface("COM4",115200) # Change this
+    g = IMCSPowerInterface("COM6",115200) # Change this
     g.sample_imc()
 
         
