@@ -25,19 +25,24 @@ class Core:
         self.sys_log = Logger("system_log",self.sys_log_dir + "\\sys","sys_log")
         self.sys_log.log.info(f"[+] Core System Logging Initialized")
         
-        self.pyl_log = Logger("payload_log",self.pyl_log_dir,"pyl_log")
+        self.pyl_log = Logger("payload_log",self.pyl_log_dir + "\\pyl","pyl_log")
         self.pyl_log.log.info(f"[+] Payload Instrument Logging Initialized")
 
         self.sys_log.log.info(f"[+] Core System Logging Initialized")
         
     def run(self):
-        core_thread = threading.Thread(target=self.run_core_ctl).start()
-        instr_thread  = threading.Thread(target=self.run_inst_ctl).start()
-
+        try:
+            core_thread = threading.Thread(target=self.run_core_ctl).start()
+            instr_thread  = threading.Thread(target=self.run_inst_ctl).start()
+            
+        except Exception as error:
+            sys_log.log.error(error)
+            return 1
+            
     # TODO: Spawn asynchonous thread for each instrument to log data to, give each object self.pyl_log_dir to store their data
     # ----------THREADS----------------------------------------------------------------- #
     def run_core_ctl(self):
-        self.core_ctl = IMCSPowerInterface("COM6",115200,self.sys_log_dir)
+        self.core_ctl = IMCSPowerInterface("COM6",115200,self.sys_log_dir,self.pyl_log_dir)
         self.sys_log.log.info(f"[+] Core Control Active")
         # Get system data from core
         

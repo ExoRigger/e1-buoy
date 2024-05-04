@@ -7,18 +7,22 @@ from time import sleep
 import sys
 
 
-# Change to D:\
+# Directory locations for input configuration files & output log and data files
+CONF_DIR = ""
 LOG_DIR = "C:\\core_supervisor\\logs"
 DATA_DIR = "C:\\core_supervisor\\data"
-CONF_DIR = ""
 
+# Directory location for the supevisor logs
 supervisor_log_dir = LOG_DIR + "\\supervisor_logs"
 
-# Any master/sysadmin functions beyond core control in here
+
+# ================================================================
+# Overwatches core control of PML E1 Systems
+# ================================================================
 
 def main():
     master_log =  Logger("supervisor_log",supervisor_log_dir,"supervisor_log")
-    master_log.log.info(f"[o] Core Supervisor Engaged - Initiating Core System")
+    master_log.log.info(f"[+] Core System Supervisor Active")
     e1_core = Core(LOG_DIR)
 
     try:
