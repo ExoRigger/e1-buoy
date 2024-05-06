@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from logging import getLogger, Formatter, StreamHandler, FileHandler, DEBUG
+from logging import getLogger, Formatter, StreamHandler, FileHandler, DEBUG,INFO
 from logging.handlers import TimedRotatingFileHandler
 from time import strftime
 from pathlib import Path
@@ -22,9 +22,10 @@ class Logger:
         formatter = Formatter('%(asctime)s,%(message)s','%H:%M:%S')
 
       # Handle logging to file and stdout
-        stream_handler = StreamHandler()
-        stream_handler.setFormatter(formatter)
-        self.log.addHandler(stream_handler)
+        self.stream_handler = StreamHandler()
+        self.stream_handler.setFormatter(formatter)
+        # stream_handler.setLevel(100) # hide messages from std_out
+        self.log.addHandler(self.stream_handler)
 
         logfile_handler = TimedRotatingFileHandler(strftime(f"{self.location}/{self.filename}_%Y-%m-%d_%H%M%S.log"), when="h",interval=1,backupCount=100)
         logfile_handler.setFormatter(formatter)

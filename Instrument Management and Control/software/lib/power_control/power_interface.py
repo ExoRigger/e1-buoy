@@ -27,8 +27,13 @@ class IMCPowerInterface:
         self.data_dir = data_dir
         self.payloads = payloads
         self.imc_control_logger = Logger("IMC System Logger",f"{self.log_dir}","imc_control_log")
+        
         self.imc_power_logger = Logger("IMC Power Logger",f"{self.log_dir}" + "\\power_logs","imc_power_log")
         self.par_logger = Logger("PAR Sensor Logger",self.data_dir + "\\par","par")
+        
+      # Hide data streams from std_out
+        self.imc_power_logger.stream_handler.setLevel(100) 
+        self.par_logger.stream_handler.setLevel(100)
         
         self.par_logger.log.info(f"PAR")
         self.imc_power_logger.log.info(f"CHANNEL,STATE,VOLTAGE(V),CURRENT(mA)")
@@ -87,7 +92,8 @@ class IMCPowerInterface:
         self.send_data(cmd1)
         self.send_data(cmd2)
         self.imc_control_logger.log.info(f"[+] (IMC Control) TOGGLE: {ch}")
-    
+   
+  # Set logging mode (0 = poll, 1 = stream)   
     def set_mode(self,mode):
         self.imc_control_logger.log.info(f"[o] (IMC Control) MODE: {mode}")
         cmd1 = f"m\r"
@@ -95,18 +101,20 @@ class IMCPowerInterface:
         self.send_data(cmd1)
         self.send_data(cmd2)
         self.imc_control_logger.log.info(f"[+] (IMC Control) MODE: {mode}")
- 
+
+  # Power on CTD and PAR 
     def activate_pyl(self):
         self.set_ch(3,1)
         self.set_ch(4,1)
         self.imc_control_logger.log.info(f"[+] (IMC Control) PYL ACTIVE")
       
+  # Activates payload, takes 200 samples at 5Hz default, stops logging, deactivates payload  
     def sample_imc(self,samples=200,frequency=5):
         dt = 1/frequency
-        self.set_mode("1")
         self.imc_control_logger.log.info(f"[o] (IMC Control) ACTIVE")  
         self.imc_control_logger.log.info(f"[o] (IMC Control) SAMPLE IMC")
         self.activate_pyl()
+        self.set_mode(1)
         for i in range(samples):
             try:
                 sleep(dt)
@@ -115,11 +123,13 @@ class IMCPowerInterface:
                 self.log_data(status_string)                         
             except Exception as Err:
                 self.imc_control_logger.log.info(f"[-] (IMC Control) SAMPLE IMC \n{Err}")
-        self.set_mode("0")
-        self.imc_control_logger.log.info(f"[+] (IMC Control) SAMPLE IMC")
         self.deactivate_pyl()
+        self.set_mode(0)
+        self.imc_control_logger.log.info(f"[+] (IMC Control) SAMPLE IMC")
+        
         self.imc_control_logger.log.info(f"[o] (IMC Control) END")      
               
+  # Power off CTD and PAR
     def deactivate_pyl(self):
         self.set_ch(3,0)
         self.set_ch(4,0)

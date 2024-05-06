@@ -29,6 +29,6 @@ class IMCPayloadInterface:
         # MET MAAT Instrument data monitor here
         self.pyl_log.log.info(f"[o] (PYL Control): ACTIVE")
         self.pyl_log.log.info(f"[o] (PYL Control): SAMPLE PYL")
-        sleep(60)
+        sleep(120)
         self.pyl_log.log.info(f"[+] (PYL Control): SAMPLE PYL")
         self.pyl_log.log.info(f"[o] (PYL Control): END")
