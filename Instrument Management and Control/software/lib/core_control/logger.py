@@ -5,7 +5,6 @@ from logging.handlers import TimedRotatingFileHandler
 from time import strftime
 from pathlib import Path
 
-
 class Logger:
 
     def __init__(self,label,location,filename):
@@ -20,7 +19,7 @@ class Logger:
         self.log = getLogger(self.label)
         self.log.setLevel(DEBUG)
         formatter2 = Formatter('%(asctime)s: %(funcName)s (%(lineno)d): %(message)s', '%H:%M:%S')
-        formatter = Formatter('%(asctime)s: %(message)s', '%H:%M:%S')
+        formatter = Formatter('%(asctime)s,%(message)s','%H:%M:%S')
 
       # Handle logging to file and stdout
         stream_handler = StreamHandler()
