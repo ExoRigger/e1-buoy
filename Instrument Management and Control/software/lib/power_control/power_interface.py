@@ -30,8 +30,8 @@ class IMCPowerInterface:
         self.imc_power_logger = Logger("IMC Power Logger",f"{self.log_dir}" + "\\power_logs","imc_power_log")
         self.par_logger = Logger("PAR Sensor Logger",self.data_dir + "\\par","par")
         
-        self.par_logger.log.info(f"TIMESTAMP,PAR")
-        self.imc_power_logger.log.info(f"TIMESTAMP,CHANNEL,STATE,VOLTAGE(V),CURRENT(mA)")
+        self.par_logger.log.info(f"PAR")
+        self.imc_power_logger.log.info(f"CHANNEL,STATE,VOLTAGE(V),CURRENT(mA)")
         
         self.imc_control_logger.log.info(f"[o] (IMC Control) INITIALIZED")
         
