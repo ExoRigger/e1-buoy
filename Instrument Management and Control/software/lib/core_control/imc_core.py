@@ -16,14 +16,20 @@ from lib.payload_control.payload_interface import IMCPayloadInterface
 
 class Core:
 
-    def __init__(self,conf_dir,log_dir,data_dir):
-        # Setup logging and transmission of data
+    def __init__(self,log_dir,data_dir):
+        # Define attached payloads
+        self.payloads = {
+                          "PAYLOAD_PC": {"channel": 1},
+                          "STEATITE_MMCU": {"channel": 2},
+                          "WETLABS_WQM": {"channel": 3},
+                          "SEABIRD_PAR": {"channel": 4},
+                        }   
+        # Setup logging and collection of data
         self.sys_log_dir = log_dir
         self.pyl_data_dir = data_dir
         self.init_logging()
-        
-        # Parse config, which involves using core_ctl to set power channels accordingly
-        
+
+                                      
     def init_logging(self):
         self.sys_log = Logger("core_logger",self.sys_log_dir + "\\core","core_log")
         self.sys_log.log.info(f"[+] (Core Control) INITIALIZED")
@@ -51,10 +57,11 @@ class Core:
 # =====================================================================
 # TODO: Give IMCPowerInterface the list of sensor;channel allocations
     def run_imc_ctl(self):
-        self.core_ctl = IMCPowerInterface("COM6",115200,self.sys_log_dir,self.pyl_data_dir)        
+        self.core_ctl = IMCPowerInterface("COM6",115200,self.sys_log_dir,self.pyl_data_dir,self.payloads)        
         self.core_ctl.sample_imc()
 
     def run_pyl_ctl(self):
         self.pyl_ctl = IMCPayloadInterface(self.sys_log_dir,self.pyl_data_dir)
         self.pyl_ctl.sample_pyl()
+        
 # =====================================================================

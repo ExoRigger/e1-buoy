@@ -12,7 +12,6 @@ from time import sleep
 import sys
 
 # Directory locations for input configuration files & output log and data files
-CONF_DIR = ".\\conf"
 LOG_DIR = "C:\\E1_InstrumentControl\\system_logs"
 DATA_DIR = "C:\\E1_InstrumentControl\\payload_data"
 
@@ -21,7 +20,7 @@ DATA_DIR = "C:\\E1_InstrumentControl\\payload_data"
 def imcCoreMonitor():
     core_mon_logger =  Logger("core_mon_log",LOG_DIR + "\\core_monitor","imc_core_monitor")
     core_mon_logger.log.info(f"[o] (Core Monitor) INITIALIZED")
-    e1_core = Core(CONF_DIR,LOG_DIR,DATA_DIR)
+    e1_core = Core(LOG_DIR,DATA_DIR)
  
     try:
         core_mon_logger.log.info(f"[o] (Core Monitor) ACTIVE")
@@ -34,10 +33,7 @@ def imcCoreMonitor():
         
     except Exception as E:
         core_mon_logger.log.error(f"[-] (Core Monitor) CORE FAILURE: {E}")
-        
-    
-    
-    
+       
 if __name__ == '__main__':
 
     imcCoreMonitor()

@@ -20,12 +20,12 @@ class IMCPowerInterface:
     #   Constructor inputs: 
     #    serial_port: Serial port of MCU
     #    baudrate:    Telemetry baudrate of MCU
-    def __init__(self,serial_port,baudrate,log_dir,data_dir):
+    def __init__(self,serial_port,baudrate,log_dir,data_dir,payloads):
         self.device = serial_port
         self.baudrate = baudrate
         self.log_dir = log_dir + "\\imc"
         self.data_dir = data_dir
-        
+        self.payloads = payloads
         self.imc_control_logger = Logger("IMC System Logger",f"{self.log_dir}","imc_control_log")
         self.imc_power_logger = Logger("IMC Power Logger",f"{self.log_dir}" + "\\power_logs","imc_power_log")
         self.par_logger = Logger("PAR Sensor Logger",self.data_dir + "\\par","par")
@@ -62,6 +62,16 @@ class IMCPowerInterface:
     # Abstracted IMC Commands to reduce direct access to MCU interface
     # ================================================================
     
+    def set_ch(self,ch,state):
+        self.imc_control_logger.log.info(f"[o] (IMC Control) SET: {ch} {state}")
+        cmd1 = f"s\r"
+        cmd2 = f"{ch}\r"
+        cmd3 = f"{state}\r"
+        self.send_data(cmd1)
+        self.send_data(cmd2)
+        self.send_data(cmd3)  
+        self.imc_control_logger.log.info(f"[+] (IMC Control) SET: {ch} {state}")
+        
     def cycle_ch(self,ch):
         self.imc_control_logger.log.info(f"[o] (IMC Control) CYCLE: {ch}")
         cmd1 = f"c\r"
@@ -86,11 +96,17 @@ class IMCPowerInterface:
         self.send_data(cmd2)
         self.imc_control_logger.log.info(f"[+] (IMC Control) MODE: {mode}")
  
+    def activate_pyl(self):
+        self.set_ch(3,1)
+        self.set_ch(4,1)
+        self.imc_control_logger.log.info(f"[+] (IMC Control) PYL ACTIVE")
+      
     def sample_imc(self,samples=200,frequency=5):
         dt = 1/frequency
         self.set_mode("1")
-        self.imc_control_logger.log.info(f"[o] (IMC Control) ACTIVE")
+        self.imc_control_logger.log.info(f"[o] (IMC Control) ACTIVE")  
         self.imc_control_logger.log.info(f"[o] (IMC Control) SAMPLE IMC")
+        self.activate_pyl()
         for i in range(samples):
             try:
                 sleep(dt)
@@ -101,7 +117,13 @@ class IMCPowerInterface:
                 self.imc_control_logger.log.info(f"[-] (IMC Control) SAMPLE IMC \n{Err}")
         self.set_mode("0")
         self.imc_control_logger.log.info(f"[+] (IMC Control) SAMPLE IMC")
+        self.deactivate_pyl()
         self.imc_control_logger.log.info(f"[o] (IMC Control) END")      
+              
+    def deactivate_pyl(self):
+        self.set_ch(3,0)
+        self.set_ch(4,0)
+        self.imc_control_logger.log.info(f"[+] (IMC Control) PYL DISABLED")
     # ================================================================
     
 if __name__ == '__main__':
