@@ -19,10 +19,10 @@ class Core:
     def __init__(self,log_dir,data_dir):
         # Define attached payloads
         self.payloads = {
-                          "PAYLOAD_PC": {"channel": 1},
-                          "STEATITE_MMCU": {"channel": 2},
-                          "WETLABS_WQM": {"channel": 3},
-                          "SEABIRD_PAR": {"channel": 4},
+                          1:"PAYLOAD_PC",
+                          2:"STEATITE_MMCU",
+                          3:"WETLABS_WQM",
+                          4:"SEABIRD_PAR",
                         }   
         # Setup logging and collection of data
         self.sys_log_dir = log_dir
@@ -46,6 +46,7 @@ class Core:
             imc_thread.join()
             pyl_thread.join()
             
+            self.sys_log.log.info(f"[o] (Core Control) END")
             return 0
             
         except Exception as error:
@@ -57,7 +58,7 @@ class Core:
 # =====================================================================
 # TODO: Give IMCPowerInterface the list of sensor;channel allocations
     def run_imc_ctl(self):
-        self.core_ctl = IMCPowerInterface("COM6",115200,self.sys_log_dir,self.pyl_data_dir,self.payloads)        
+        self.core_ctl = IMCPowerInterface("COM38",115200,self.sys_log_dir,self.pyl_data_dir,self.payloads)        
         self.core_ctl.sample_imc()
 
     def run_pyl_ctl(self):

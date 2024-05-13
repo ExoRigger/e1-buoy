@@ -29,6 +29,8 @@ class IMCPayloadInterface:
         # MET MAAT Instrument data monitor here
         self.pyl_log.log.info(f"[o] (PYL Control): ACTIVE")
         self.pyl_log.log.info(f"[o] (PYL Control): SAMPLE PYL")
-        sleep(120)
+        #wqm_control = WQMControlInterface("COM",19200)
+        #wqm_control.run() # In future, augment this to do the same as the IMC power controller
+        sleep(30)
         self.pyl_log.log.info(f"[+] (PYL Control): SAMPLE PYL")
         self.pyl_log.log.info(f"[o] (PYL Control): END")
