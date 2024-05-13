@@ -27,18 +27,18 @@ class Core:
         # Setup logging and collection of data
         self.sys_log_dir = log_dir
         self.pyl_data_dir = data_dir
-        self.init_logging()
+        self.initLogging()
 
                                       
-    def init_logging(self):
+    def initLogging(self):
         self.sys_log = Logger("core_logger",self.sys_log_dir + "\\core","core_log")
         self.sys_log.log.info(f"[+] (Core Control) INITIALIZED")
         
-    def run(self):
+    def runCore(self):
         try:
             self.sys_log.log.info(f"[o] (Core Control) ACTIVE")
-            imc_thread = threading.Thread(target=self.run_imc_ctl)           
-            pyl_thread  = threading.Thread(target=self.run_pyl_ctl)
+            imc_thread = threading.Thread(target=self.runImcControl)           
+            pyl_thread  = threading.Thread(target=self.runPayloadControl)
             
             imc_thread.start()
             pyl_thread.start()
@@ -57,12 +57,12 @@ class Core:
 # Spin up two separate threads to govern power control and data logging
 # =====================================================================
 # TODO: Give IMCPowerInterface the list of sensor;channel allocations
-    def run_imc_ctl(self):
+    def runImcControl(self):
         self.core_ctl = IMCPowerInterface("COM38",115200,self.sys_log_dir,self.pyl_data_dir,self.payloads)        
-        self.core_ctl.sample_imc()
+        self.core_ctl.sampleImc()
 
-    def run_pyl_ctl(self):
+    def runPayloadControl(self):
         self.pyl_ctl = IMCPayloadInterface(self.sys_log_dir,self.pyl_data_dir)
-        self.pyl_ctl.sample_pyl()
+        self.pyl_ctl.samplePyl()
         
 # =====================================================================

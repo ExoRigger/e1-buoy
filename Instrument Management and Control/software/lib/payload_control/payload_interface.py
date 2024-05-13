@@ -24,7 +24,7 @@ class IMCPayloadInterface:
         self.pyl_log.log.info(f"[+] (PYL Control) INITIALIZED")
 
     # TODO: Spawn asynchonous thread for each instrument to log data to, give each object self.pyl_log_dir to store their data
-    def sample_pyl(self):
+    def samplePyl(self):
         # self.ctd_ctl = WQMControlInterface("COM",19200) 
         # MET MAAT Instrument data monitor here
         self.pyl_log.log.info(f"[o] (PYL Control): ACTIVE")

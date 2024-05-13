@@ -24,7 +24,7 @@ def imcCoreMonitor():
  
     try:
         core_mon_logger.log.info(f"[o] (Core Monitor) ACTIVE")
-        core_return_status = e1_core.run()
+        core_return_status = e1_core.runCore()
         if core_return_status == 0:
             core_mon_logger.log.info(f"[+] (Core Monitor) END")
             
